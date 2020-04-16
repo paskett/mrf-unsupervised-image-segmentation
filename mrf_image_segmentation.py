@@ -19,7 +19,7 @@ def segment(img, numiter=100, alpha=(1.1, 10.0)):
     """Runs the entire segmentation algorithm.
 
     Inputs:
-    
+
       img (ndarray) : a grayscale image to be segmented.
 
       numiter (int) : the number of iterations to compute.
@@ -89,15 +89,27 @@ def re_segment(img, t, alpha, params):
 
     return np.argmax(probs, axis=0)
 
+def noise_likelihood(img_c, mu, sig, T, n_c):
+    return 1/(sig*(2*np.pi*sig**2*T)**n_c)*np.exp(-1/(2*T)*[((y-mu)/sig)**2 for y in img_c ])
 
-def sample_noise():
+def sample_noise(img, mu_0, sig_0, Y, T, n_c):
     """Samples the noise model parameters.
     The output is a dictionary with these keys:
     {
      'mu': an array with the mean for each class
      'sig': an array with the st. dev. for each class
     }"""
-    pass
+    means = []
+    sigs = []
+    for c in num_classes:
+        img_c = np.ravel(img[np.where(Y==c)])
+        mu = acceptance(img_c, mu_0, sig_0, T, n_c)
+        means.append(mu)
+
+        sig = acceptance(img_c, mu, sig_0, T, n_c)
+        sigs.append(sig)
+
+    return mus, sigs
 
 
 def sample_MRF():
@@ -114,3 +126,26 @@ def sample_MRF():
 def sample_num_classes():
     """Return an integer with the number of classes."""
     pass
+
+def acceptance(old_sample, variance, likelihood_function):
+    new_sample = np.random.normal(0, variance)
+
+    old_likelihood = likelihood_function(old_sample)
+    new_likelihood = likelihood_function(new_sample)
+
+    ratio = new_likelihood/old_likelihood
+
+    if ratio > 1:
+        # always accept
+        output = new_sample
+    else:
+        # accept w/ probability ratio
+        draw = np.random.random()
+        if draw < ratio:
+            # accept
+            output = new_sample
+        else:
+            # reject
+            output = old_sample
+
+    return output
