@@ -19,7 +19,7 @@ def segment(img, numiter=100, alpha=(1.1, 10.0)):
     """Runs the entire segmentation algorithm.
 
     Inputs:
-    
+
       img (ndarray) : a grayscale image to be segmented.
 
       numiter (int) : the number of iterations to compute.
@@ -81,7 +81,7 @@ def re_segment(img, t, alpha, params):
         beta1 = MRF_params['beta1'][c]
 
         # Compute the probabilities for this class
-        probs[idx] = 1/np.sqrt(2*np.pi*T_t*sig**2)*np.exp(
+        probs[c] = 1/np.sqrt(2*np.pi*T_t*sig**2)*np.exp(
             -1/T_t*(0.5*((img - mu)/sig)**2
              + (beta0 + beta1*V(c, eta))) # FIXME: what's eta?
         ) # FIXME: define the function V()
@@ -90,15 +90,17 @@ def re_segment(img, t, alpha, params):
     return np.argmax(probs, axis=0)
 
 
-def sample_noise():
+def sample_noise(img, t, alpha, params):
     """Samples the noise model parameters.
     The output is a dictionary with these keys:
     {
      'mu': an array with the mean for each class
      'sig': an array with the st. dev. for each class
-    }"""
-    pass
-
+    }
+    """
+    mu = np.zeros(())
+    for c
+    return {'mu': mu, 'sig': sig }
 
 def sample_MRF():
     """Samples the MRF model parameters.
@@ -114,3 +116,27 @@ def sample_MRF():
 def sample_num_classes():
     """Return an integer with the number of classes."""
     pass
+
+
+def metro_hastings(old_sample, ): 
+    def get_likelihood(sample): 
+        return likelihood      
+    # draw new_sample from uniform      
+    old_likelihood = get_likelihood(old_sample) 
+    new_likelihood = get_likelihood(new_sample)      
+    ratio = new_likelihood/old_likelihood      
+    if ratio > 1: 
+        # always accept 
+        old_sample = new_sample 
+    else: 
+        # accept w/ probability ratio 
+        draw = np.uniform(0,1).sample() 
+        if draw < ratio:
+            # accept 
+            old_sample = new_sample 
+        else: 
+            # reject 
+            pass 
+
+def noise_likelihood(img_c, mu, sig, T, n_c): 
+    return 1/(sig*(2*np.pi*sig**2*T)**n_c)*np.exp(-1/(2*T)*[((y-mu)/sig)**2 for y in img_c ])
