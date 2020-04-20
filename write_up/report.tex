@@ -62,4 +62,53 @@ linkbordercolor={0 0 1}
 
 TODO
 
+\begin{equation}
+\begin{aligned}
+p(X=x, \Psi, k | Y=y) \propto & \\
+\frac{1}{\sqrt{2 \pi \sigma_{x_{s}}^{2}}} \exp \left\{-\frac{1}{2} \sum_{s \in \Omega}\left(\frac{y_{s}-\mu_{x_{s}}}{\sigma_{x_{s}}}\right)^{2}\right\} \\
+\times \frac{\exp \left\{-\sum_{s \in \Omega}\left(\beta_{x_{s}}^{(0)}+\beta^{(1)} V\left(x_{s}, \eta_{s}\right)\right)\right\}}{\prod_{s \in \Omega} \sum_{c \in \Lambda} \exp \left\{-\left(\beta_{c}^{(0)}+\beta^{(1)} V\left(c, \eta_{s}\right)\right)\right\}} \\
+\times p_{r}\left(\beta^{(1)}\right) p_{r}(k) \prod_{c \in \Lambda} p_{r}\left(\mu_{c}\right) p_{r}\left(\sigma_{c}\right) p_{r}\left(\beta_{c}^{(0)}\right)
+\end{aligned}
+\end{equation}
+
+
+\begin{equation}
+\begin{aligned}
+p\left(x_{s}=c |\right.&\left.y_{s}, \eta_{c}, \Psi_{c}\right) \propto \\
+& \frac{1}{\sqrt{2 \pi \sigma_{c}^{2} T_{t}}} \exp \left\{-\frac{1}{T_{t}}\left[\frac{1}{2}\left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2}+\left(\beta_{c}^{(0)}+\beta^{(1)} V\left(c, \eta_{s}\right)\right)\right]\right\}
+\end{aligned}
+\end{equation}
+
+
+
+\begin{equation}
+\begin{aligned}
+p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \prod_{s: x_{s}=c} p\left(y_{s} | \mu_{c}, \sigma_{c}\right) p_{r}\left(\mu_{c}\right) p_{r}\left(\sigma_{c}\right) \\
+&=\frac{1}{\sigma_{c}\left(2 \pi \sigma_{c}^{2} T_{t}\right)^{n_{c}}} \exp \left\{-\frac{1}{2 T_{t}} \sum_{s: a_{s=c}}\left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2}\right\}
+\end{aligned}
+\end{equation}
+
+
+\begin{equation}
+\begin{array}{l}
+p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
+\quad=p\left(X | \beta_{c}^{(0)}, c \in \Lambda\right) p_{r}\left(\beta_{c}^{(0)}, c \in \Lambda\right) \\
+\quad=\prod_{\left(c \in \Lambda, \psi_{\eta}\right)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}+\beta^{(1)} V(c, \eta)\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right)}\right)^{n_{(c, n)}} \\
+\quad=\prod_{(c \in \Lambda)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}\right)^{n_{c}} \\
+\quad \times \prod_{(c \in \Lambda, \psi \eta)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta^{(1)} V(c, \eta)\right]\right) \sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right.}\right)^{n_{(c, n)}}
+\end{array}
+\end{equation}
+
+
+\begin{equation}
+\begin{aligned}
+&\beta_{c 1}^{(0)}=\beta_{c}^{(0)}-T_{t} \ln \left(u_{1}\right) \quad \beta_{c 2}^{(0)}=\beta_{c}^{(0)}-T_{t} \ln \left(1-u_{1}\right)\\
+&\begin{array}{l}
+\mu_{c 1}=\mu_{c}-u_{2} \sigma_{c} \sqrt{\frac{1-u 1}{u 1}} \quad \mu_{c 2}=\mu_{c}+u_{2} \sigma_{c} \sqrt{\frac{u 1}{1-u 1}} \\
+\sigma_{c 1}^{2}=u_{3}\left(1-u_{2}^{2}\right) \sigma_{c}^{2} \frac{1}{u_{1}} \quad \sigma_{c 2}^{2}=\left(1-u_{3}\right)\left(1-u_{2}^{2}\right) \sigma_{c}^{2} \frac{1}{1-u_{1}}
+\end{array}
+\end{aligned}
+\end{equation}
+
+
 \end{document}
