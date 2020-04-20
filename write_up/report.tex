@@ -38,7 +38,8 @@ linkbordercolor={0 0 1}
 \newcommand\course{Math 522}
 \newcommand\instructor{Dr. Whitehead}
 \newcommand\hwnumber{}
-\newcommand\name{Jake Callahan, McKay Harward, Taylor Paskett, Isaac Robbins, Mingyan Zhao}
+\newcommand\name{Jake Callahan, McKay Harward, Taylor Paskett, James,
+Isaac Robbins, Mingyan Zhao}
 \newtcolorbox{cbox}[3][]
 {
   colframe = #2!25,
@@ -50,9 +51,9 @@ linkbordercolor={0 0 1}
 
 \pagestyle{fancyplain}
 \headheight 32pt
-\lhead{\name \\ \today}
+\lhead{\name \\ \today \\}
 \chead{\textbf{\Large Final Project \hwnumber}}
-\rhead{\course \\ \instructor}
+\rhead{\course \\ \instructor \\}
 \lfoot{}
 \cfoot{}
 \rfoot{\small\thepage}
@@ -60,6 +61,17 @@ linkbordercolor={0 0 1}
 
 \begin{document}
 
-TODO
+\section{Numerical Simplification}
+We have some errors because of numerical issues; the likelihoods are not scaled, so they cause numerical overflow and underflow.
+So, instead of computing likelihoods directly, we compute them as ratios \begin{align*}
+    \frac{L_{new}}{L_{old}}.
+\end{align*}
+For the likelihood of the noise model, we can simplify it in the following way
+\begin{align*}
+    \frac{L_{new}}{L_{old}} &= \frac{\sigma_c^{old} (2 \pi (\sigma_c^{old})^2 T_{t-1})^{n_c} \exp \left\{ \frac{-1}{2 T_t} \sum_{s: x_s = c} \left( \frac{y_s - \mu_c}{\sigma_c} \right)^2 \right\} }{ \sigma_c (2 \pi (\sigma_c)^2 T_t)^{n_c} \exp \left\{ \frac{-1}{2 T_{t-1}} \sum_{s: x_s = c} \left( \frac{y_s - \mu_c^{old}}{\sigma_c^{old}} \right)^2 \right\}} \\
+    &= \left( \frac{\sigma_c^{old}}{\sigma_c} \right)^{3 + n_c} \left( \frac{T_{t-1}}{T_t} \right)^{n_c} \exp \left\{ \frac{-1}{2 T_t} \sum_{s: x_s = c} \left( \frac{y_s - \mu_c}{\sigma_c} \right)^2 + \frac{1}{2 T_{t-1}} \sum_{s: x_s = c} \left( \frac{y_s - \mu_c^{old}}{\sigma_c^{old}} \right)^2  \right\} \\
+    &= \left( \frac{\sigma_c^{old}}{\sigma_c} \right)^{3 + n_c} \left( \frac{T_{t-1}}{T_t} \right)^{n_c} \exp \left\{  \sum_{s: x_s = c} \frac{-1}{2 T_t} \left( \frac{y_s - \mu_c}{\sigma_c} \right)^2 + \frac{1}{2 T_{t-1}} \left( \frac{y_s - \mu_c^{old}}{\sigma_c^{old}} \right)^2  \right\} \\
+    &= \prod_{s: x_s = c} \left( \frac{\sigma_c^{old}}{\sigma_c} \right)^{3} \left( \frac{T_{t-1}}{T_t} \right) \exp \left\{ \frac{-1}{2 T_t} \left( \frac{y_s - \mu_c}{\sigma_c} \right)^2 + \frac{1}{2 T_{t-1}} \left( \frac{y_s - \mu_c^{old}}{\sigma_c^{old}} \right)^2  \right\}
+\end{align*}
 
 \end{document}
