@@ -34,13 +34,24 @@ The goal of this project was to evaluate current use of Markov random fields in 
 \end{abstract}
 
 \section{Background and Motivation}
-This paper was motivated by the desire for a hands-off image segmentation algorithm. Primary motivations for wanting a hands-off image segmenter have to do with applications in neural photo editing using introspective adversarial networks as well as image recognition and a few other computer graphics applications. The idea for using Markov random fields for image segmentation has been around for a long time; in fact, the paper we decided to implement was written in 2000, but the unsupervised method doesn’t seem to have any study since then. The background research we conducted mostly only returned methods for segmenting images based on pretraining a Markov random field on a class, and then estimating which pixels in a given image are most likely to be of that class. While this is useful, the more hands-off the approach the easier it is to apply to new scenarios. The drawback of our unsupervised method is that it trades an initial investment of creating pertained Markov random fields for a computationally expensive algorithm using metropolis Hastings to find those best parameters. So there are definite drawbacks to both methods, but with recent advances in computing power, we believe this method can provide results it previously couldn’t.
+Image segmentation is one the the most important problems in machine learning today. Industries like medicine, transportation, and manufacturing have all been benefited by the rapid advances we have made in creating image segmentation systems. 
+One of the most interesting and valuable fields of study is the area focused on unsupervised image segmentation methods. 
+A powerful and accurate unsupervised image segmentation system would have applications in neural photo editing using introspective adversarial networks as well as in image recognition and other computer graphics applications. In this paper, we examine and implement [INSERT NAMES HERE]'s idea for using Markov random fields for unsupervised image segmentation.
+
+ The idea for using Markov random fields for image segmentation has been around for a long time; much research has been done in this area, mostly focusing on supervised learning methods. Most of this research centers around segmenting images based on pretraining a Markov random field on a class, and then estimating which pixels in a given image are most likely to be of that class. While this is useful, the more hands-off the approach the easier it is to apply to new scenarios. 
+ 
+ Unfortunately, research regarding hands-off applications is virtually nonexistent. 
+ Other than [INSERT NAMES HERE]'s research, which was published in 2000, we could find no other papers examining the use of Markov random fields for unsupervised segmentation. 
+ The main drawback of this unsupervised method is that it trades an initial investment of creating pertained Markov random fields for a computationally expensive algorithm using metropolis Hastings.
+ Thus, it might be possible that limitations in computing power kept further research in this area from being valuable.
+ We believe that with the advances in computing power over the last 20 years it is now valuable to revisit these methods in order to determine if applications are possible in the current world of machine learning.
 
 \section{Data}
-This method is not trained on a dataset but rather trains itself on the single image it plans to segment. We obtained a couple of images from the paper we read as well as a couple from James’ phone.
-
+The algorithm we outline below trains itself on each image it operates on. As such, we didn't need (or want) a large dataset to use in this project.
+Instead, we curated a small corpus of images by hand that we believed would be useful in providing us information about how well our algorithm was training and making predictions. 
+The full set of those images can be found here: [INSERT LINK TO ALL IMAGES WE USED]
 \section{Methods}
-Our method can be outlaid in 6 steps:
+The algorithm can be outlined in 6 steps:
 
 \begin{enumerate}
 	\item Random initialize each Markov random field for a randomly drawn number of classes
@@ -50,18 +61,26 @@ Our method can be outlaid in 6 steps:
 	\item Sample number of classes
 	\item Repeat steps (2) - (5) until convergence
 \end{enumerate}
-Thought the process is simple, each of these steps required extensive coding and interpretation of equations. Step (5) was the hardest step by far, as the equations referenced various parts of the text with little explanation. In repeating steps (2)-(5), we’re calculating an acceptance probability with each sampled parameter and using metropolis Hastings to decide whether or not we want to adopt the new parameters or keep our old parameters. These acceptance probabilities are defined as follows:
+The sampling method follows the same basic pattern: sample new parameters from their prior distributions, calculate an acceptance probability (or likelihood) for those parameters, and then use the Metropolis-Hastings algorithm to choose to accept/reject those parameters.
 
-\subsection{Noise}
-The noise parameters $\mu$ and $\sigma$ are sampled using Metropolis-Hastings with the following likelihood:
+On the surface, this algorithm is simple and was defined in [INSERT NAMES HERE]'s paper. However, many of the equation definitions and notational choices were unclear and required extensive interpretation. 
+Further, some of the equations as defined in the text suffered from underflow/overflow errors and thus required considerable reworking to be suitable for implementation. We define now:
+
+\subsection{Equation Definitions}
+In the following equations, we use the following notation:
+$c$ denotes each segmentation class, $T_t$ denotes the temperature value at time $t$, and $x_s$ and $y_s$ denote the label and value of pixel $s$, respectively (note that this is the reverse of how machine learning data is traditionally notated). 
+\subsubsection{Noise}
+The noise parameters $\mu$ and $\sigma$ affect [INSERT HOW NOISE AFFECTS HERE].
+They are sampled using Metropolis-Hastings with the following likelihood:
 \begin{equation}
 \begin{aligned}
 p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \prod_{s: x_{s}=c} p\left(y_{s} | \mu_{c}, \sigma_{c}\right) p_{r}\left(\mu_{c}\right) p_{r}\left(\sigma_{c}\right) \\
-&=\frac{1}{\sigma_{c}\left(2 \pi \sigma_{c}^{2} T_{t}\right)^{n_{c}}} \exp \left\{-\frac{1}{2 T_{t}} \sum_{s: a_{s=c}}\left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2}\right\}
+&=\frac{1}{\sigma_{c}\left(2 \pi \sigma_{c}^{2} T_{t}\right)^{n_{c}}} \exp \left\{-\frac{1}{2 T_{t}} \sum_{s: x_s = c}\left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2}\right\}
 \end{aligned}
 \end{equation}
+Here, $n_c$ denotes the number of pixels labeled with class $c$. 
 
-\subsection{MRF}
+\subsubsection{MRF}
 The noise parameters $\mu$ and $\sigma$ are sampled using Metropolis-Hastings with the following probability:
 \begin{equation}
 \begin{array}{l}
@@ -73,7 +92,7 @@ p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
 \end{array}
 \end{equation}
 
-\subsection{Number of classes}
+\subsubsection{Number of classes}
 The number of classes are sampled with likelihood
 \begin{equation}
 \begin{aligned}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  20 APR 2020 20:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  21 APR 2020 14:23
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -656,28 +656,28 @@ Overfull \hbox (23.65823pt too wide) in paragraph at lines 31--31
 [1
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-[2]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 95.
- [3] [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 95.
+[2] [3]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 114.
+ [4]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 114.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 95.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 95.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 114.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 114.
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 4DC5A92376F6EC35F62C3E7E440A3482;443.
+(rerunfilecheck)             Checksum: 785A1841115199F13641965C9B688432;543.
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 95.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 114.
  ) 
 Here is how much of TeX's memory you used:
- 13095 strings out of 492616
- 216902 string characters out of 6129482
- 677576 words of memory out of 5000000
- 16861 multiletter control sequences out of 15000+600000
- 12364 words of font info for 48 fonts, out of 8000000 for 9000
+ 13098 strings out of 492616
+ 216980 string characters out of 6129482
+ 678579 words of memory out of 5000000
+ 16863 multiletter control sequences out of 15000+600000
+ 12672 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,12n,43p,1293b,745s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,11n,43p,911b,745s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
@@ -694,10 +694,10 @@ live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/texl
 ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texli
 ve/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive
 /2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on report.pdf (4 pages, 179609 bytes).
+Output written on report.pdf (4 pages, 186691 bytes).
 PDF statistics:
- 140 PDF objects out of 1000 (max. 8388607)
- 116 compressed objects within 2 object streams
- 23 named destinations out of 1000 (max. 500000)
- 73 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 144 PDF objects out of 1000 (max. 8388607)
+ 120 compressed objects within 2 object streams
+ 24 named destinations out of 1000 (max. 500000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
 
