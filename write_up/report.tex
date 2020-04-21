@@ -1,65 +1,71 @@
-\documentclass[10pt,letterpaper]{article}
+\documentclass[11pt]{article}
 \usepackage{fullpage}
-\usepackage[top=1.75cm, bottom=4cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage[margin=2.5cm, bottom=3cm]{geometry}
 \usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
-\usepackage{lastpage}
-\usepackage{enumerate}
-\usepackage{fancyhdr}
 \usepackage{mathrsfs}
-\usepackage{xcolor}
-\usepackage{graphicx}
-\usepackage{listings}
+\usepackage{fancyhdr}
 \usepackage{hyperref}
-\usepackage{tcolorbox}
-\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage[backend=biber]{biblatex}
 
-\hypersetup{%
+\addbibresource{baby_cry.bib}
+
+\hypersetup{
 colorlinks=true,
 linkcolor=blue,
-linkbordercolor={0 0 1}
+linkbordercolor={0 0 1},
+citecolor=black
 }
 
-\renewcommand\lstlistingname{Algorithm}
-\renewcommand\lstlistlistingname{Algorithms}
-\def\lstlistingautorefname{Alg.}
-
-\lstdefinestyle{Python}{
-  language        = Python,
-  frame           = lines,
-  basicstyle      = \footnotesize,
-  keywordstyle    = \color{blue},
-  stringstyle     = \color{green},
-  commentstyle    = \color{red}\ttfamily
-}
-
-\setlength{\parindent}{0.0in}
-\setlength{\parskip}{0.05in}
-
-\newcommand\course{Math 522}
-\newcommand\instructor{Dr. Whitehead}
-\newcommand\hwnumber{}
-\newcommand\name{Jake Callahan, McKay Harward, Taylor Paskett, Isaac Robbins, Mingyan Zhao}
-\newtcolorbox{cbox}[3][]
-{
-  colframe = #2!25,
-  colback  = #2!10,
-  coltitle = #2!20!black,
-  title    = {#3},
-  #1,
-}
-
+\linespread{1.25}
 \pagestyle{fancyplain}
-\headheight 32pt
-\lhead{\name \\ \today}
-\chead{\textbf{\Large Final Project \hwnumber}}
-\rhead{\course \\ \instructor}
-\lfoot{}
-\cfoot{}
-\rfoot{\small\thepage}
 \headsep 1.5em
+\headheight 14pt
+
+\title{Image Segmentation Using Markov Random Fields: An Implementation}
+
+\author{Jake Callahan, James Griffin, McKay Harward, Taylor Paskett, Isaac Robbins, Mingyan Zhao}
 
 \begin{document}
+\maketitle
 
-TODO
+\begin{abstract}
+The goal of this project was to evaluate current use of Markov random fields in image segmentation, then to implement one of the more advanced methods. In this paper we discuss how we implemented the equations from a paper based on an unsupervised method that used metropolis Hastings algorithm to find the best parameters for the Markov random field as well as the best number of classes. In short, we coded up a hands-off method of segmenting an input image.
+\end{abstract}
+
+\section{Background and Motivation}
+This paper was motivated by the desire for a hands-off image segmentation algorithm. Primary motivations for wanting a hands-off image segmenter have to do with applications in neural photo editing using introspective adversarial networks as well as image recognition and a few other computer graphics applications. The idea for using Markov random fields for image segmentation has been around for a long time; in fact, the paper we decided to implement was written in 2000, but the unsupervised method doesn’t seem to have any study since then. The background research we conducted mostly only returned methods for segmenting images based on pretraining a Markov random field on a class, and then estimating which pixels in a given image are most likely to be of that class. While this is useful, the more hands-off the approach the easier it is to apply to new scenarios. The drawback of our unsupervised method is that it trades an initial investment of creating pertained Markov random fields for a computationally expensive algorithm using metropolis Hastings to find those best parameters. So there are definite drawbacks to both methods, but with recent advances in computing power, we believe this method can provide results it previously couldn’t.
+
+\section{Data}
+This method is not trained on a dataset but rather trains itself on the single image it plans to segment. We obtained a couple of images from the paper we read as well as a couple from James’ phone.
+
+\section{Methods}
+Our method can be outlaid in 6 steps:
+
+\begin{enumerate}
+	\item Random initialize each Markov random field for a randomly drawn number of classes
+	\item Segment the image based on these MRFs
+	\item Sample noise parameters $\mu$ and $\sigma$
+	\item Sample MRF parameters $\beta_0$ and $\beta_1$
+	\item Sample number of classes
+	\item Repeat steps (2) - (5) until convergence
+\end{enumerate}
+Thought the process is simple, each of these steps required extensive coding and interpretation of equations. Step (5) was the hardest step by far, as the equations referenced various parts of the text with little explanation. In repeating steps (2)-(5), we’re calculating an acceptance probability with each sampled parameter and using metropolis Hastings to decide whether or not we want to adopt the new parameters or keep our old parameters. These acceptance probabilities are defined as follows:
+
+\subsection{Noise}
+
+\subsection{MRF}
+\subsection{Number of classes}
+
+\section{Results}
+
+
+\section{Analysis}
+Our methods turned out to be fairly effective. They don’t par with current state of the art technologies but they definitely do well for something done by a few undergraduate students in a single project, not research. The model we’ve created does a fairly decent job of segmenting images on par with what the original authors achieved, though sometimes in a few extra iterations. Looking at how it works, I do think it would work in a GAN for neural photo editing to maybe train the GAN to focus itself more closely on one area while keeping the rest of the image the same, but even with faster computers, it seems it still takes too long for any practical applications. Given enough computing power it can be used. 
+
+\section{Conclusion}
+The initial intent of getting a completely unsupervised method of image segmentation using Markov Random Fields was successful and could probably be improved upon for efficiency. If given the opportunity to try image segmentation again, I would probably opt to use a neural network as they tend to require an initial investment of training time but can then be used to segment an image very quickly. Something we could do is have more informed priors for each parameters. We could also implement for color images (may be?)
+
 
 \end{document}
+
