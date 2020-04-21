@@ -53,9 +53,34 @@ Our method can be outlaid in 6 steps:
 Thought the process is simple, each of these steps required extensive coding and interpretation of equations. Step (5) was the hardest step by far, as the equations referenced various parts of the text with little explanation. In repeating steps (2)-(5), we’re calculating an acceptance probability with each sampled parameter and using metropolis Hastings to decide whether or not we want to adopt the new parameters or keep our old parameters. These acceptance probabilities are defined as follows:
 
 \subsection{Noise}
+The noise parameters $\mu$ and $\sigma$ are sampled using Metropolis-Hastings with the following likelihood:
+\begin{equation}
+\begin{aligned}
+p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \prod_{s: x_{s}=c} p\left(y_{s} | \mu_{c}, \sigma_{c}\right) p_{r}\left(\mu_{c}\right) p_{r}\left(\sigma_{c}\right) \\
+&=\frac{1}{\sigma_{c}\left(2 \pi \sigma_{c}^{2} T_{t}\right)^{n_{c}}} \exp \left\{-\frac{1}{2 T_{t}} \sum_{s: a_{s=c}}\left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2}\right\}
+\end{aligned}
+\end{equation}
 
 \subsection{MRF}
+The noise parameters $\mu$ and $\sigma$ are sampled using Metropolis-Hastings with the following probability:
+\begin{equation}
+\begin{array}{l}
+p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
+\quad=p\left(X | \beta_{c}^{(0)}, c \in \Lambda\right) p_{r}\left(\beta_{c}^{(0)}, c \in \Lambda\right) \\
+\quad=\prod_{\left(c \in \Lambda, \psi_{\eta}\right)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}+\beta^{(1)} V(c, \eta)\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right)}\right)^{n_{(c, n)}} \\
+\quad=\prod_{(c \in \Lambda)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}\right)^{n_{c}} \\
+\quad \times \prod_{(c \in \Lambda, \psi \eta)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta^{(1)} V(c, \eta)\right]\right) \sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right.}\right)^{n_{(c, n)}}
+\end{array}
+\end{equation}
+
 \subsection{Number of classes}
+The number of classes are sampled with likelihood
+\begin{equation}
+\begin{aligned}
+\frac{p\left(X=x^{+}, \psi^{+}, k^{+} | Y=y\right)}{p(X=x, \psi, k | Y=y)} & \frac{1}{p_{\beta}\left(u_{1}\right) p_{\beta}\left(u_{2}\right) p_{\beta}\left(u_{3}\right)} \\
+\times \frac{\partial\left(\Psi_{c 1}, \Psi_{c 2}\right)}{p(\text {segmentation})} &\left|\frac{1}{\partial\left(\Psi_{c}, u_{1}, u_{2}, u_{3}\right)}\right|
+\end{aligned}
+\end{equation}
 
 \section{Results}
 
