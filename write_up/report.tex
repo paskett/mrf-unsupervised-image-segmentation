@@ -61,7 +61,7 @@ linkbordercolor={0 0 1}
 \begin{document}
 
 TODO
-
+5
 \begin{equation}
 \begin{aligned}
 p(X=x, \Psi, k | Y=y) \propto & \\
@@ -71,7 +71,7 @@ p(X=x, \Psi, k | Y=y) \propto & \\
 \end{aligned}
 \end{equation}
 
-
+6
 \begin{equation}
 \begin{aligned}
 p\left(x_{s}=c |\right.&\left.y_{s}, \eta_{c}, \Psi_{c}\right) \propto \\
@@ -80,7 +80,7 @@ p\left(x_{s}=c |\right.&\left.y_{s}, \eta_{c}, \Psi_{c}\right) \propto \\
 \end{equation}
 
 
-
+7
 \begin{equation}
 \begin{aligned}
 p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \prod_{s: x_{s}=c} p\left(y_{s} | \mu_{c}, \sigma_{c}\right) p_{r}\left(\mu_{c}\right) p_{r}\left(\sigma_{c}\right) \\
@@ -88,7 +88,7 @@ p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \prod_{s: x_{s}=c} p\left(y_{
 \end{aligned}
 \end{equation}
 
-
+8
 \begin{equation}
 \begin{array}{l}
 p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
@@ -99,15 +99,36 @@ p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
 \end{array}
 \end{equation}
 
-
+12
 \begin{equation}
 \begin{aligned}
 &\beta_{c 1}^{(0)}=\beta_{c}^{(0)}-T_{t} \ln \left(u_{1}\right) \quad \beta_{c 2}^{(0)}=\beta_{c}^{(0)}-T_{t} \ln \left(1-u_{1}\right)\\
-&\begin{array}{l}
-\mu_{c 1}=\mu_{c}-u_{2} \sigma_{c} \sqrt{\frac{1-u 1}{u 1}} \quad \mu_{c 2}=\mu_{c}+u_{2} \sigma_{c} \sqrt{\frac{u 1}{1-u 1}} \\
-\sigma_{c 1}^{2}=u_{3}\left(1-u_{2}^{2}\right) \sigma_{c}^{2} \frac{1}{u_{1}} \quad \sigma_{c 2}^{2}=\left(1-u_{3}\right)\left(1-u_{2}^{2}\right) \sigma_{c}^{2} \frac{1}{1-u_{1}}
-\end{array}
+&\mu_{c 1}=\mu_{c}-u_{2} \sigma_{c} \sqrt{\frac{1-u 1}{u 1}} \quad \mu_{c 2}=\mu_{c}+u_{2} \sigma_{c} \sqrt{\frac{u 1}{1-u 1}} \\
+&\sigma_{c 1}^{2}=u_{3}\left(1-u_{2}^{2}\right) \sigma_{c}^{2} \frac{1}{u_{1}} \quad \sigma_{c 2}^{2}=\left(1-u_{3}\right)\left(1-u_{2}^{2}\right) \sigma_{c}^{2} \frac{1}{1-u_{1}}
 \end{aligned}
+\end{equation}
+
+13
+\begin{equation}
+\frac{\partial\left(\Psi_{c 1}, \Psi_{c 2}\right)}{\partial\left(\Psi_{c}, u_{1}, u_{2}, u_{3}\right)} |=\frac{T_{t} \sigma^{2}}{u_{1}^{2}\left(1-u_{1}^{2}\right) \sqrt{u 3(1-u 3)}}
+\end{equation}
+
+15
+\begin{equation}
+d\left(y^{(1)}, y^{(2)}\right)=\max _{k}\left|\hat{F}_{1}(k)-\hat{F}_{2}(k)\right|
+\end{equation}
+
+16
+\begin{equation}
+\begin{aligned}
+\frac{p\left(X=x^{+}, \psi^{+}, k^{+} | Y=y\right)}{p(X=x, \psi, k | Y=y)} & \frac{1}{p_{\beta}\left(u_{1}\right) p_{\beta}\left(u_{2}\right) p_{\beta}\left(u_{3}\right)} \\
+\times \frac{\partial\left(\Psi_{c 1}, \Psi_{c 2}\right)}{p(\text {segmentation})} &\left|\frac{1}{\partial\left(\Psi_{c}, u_{1}, u_{2}, u_{3}\right)}\right|
+\end{aligned}
+\end{equation}
+
+17
+\begin{equation}
+T_{t}=\left(1+\alpha_{1}\right)^{\alpha_{2}\left(1-\frac{t}{N_{t}}\right)}
 \end{equation}
 
 

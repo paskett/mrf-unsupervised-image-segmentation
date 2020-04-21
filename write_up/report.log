@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  20 APR 2020 17:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  20 APR 2020 18:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -724,30 +724,29 @@ LaTeX Font Info:    Try loading font information for U+rsfs on input line 65.
 
 (/usr/local/texlive/2019/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-)
-
-AED: lastpage setting LastPage
-[1{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+) [1{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 114.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 114.
 
-(./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 114.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 114.
+AED: lastpage setting LastPage
+[2]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 135.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 135.
+ (./report.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 135.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 135.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 114.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 135.
  ) 
 Here is how much of TeX's memory you used:
- 17599 strings out of 492616
- 320393 string characters out of 6129482
- 409439 words of memory out of 5000000
+ 17604 strings out of 492616
+ 320447 string characters out of 6129482
+ 413439 words of memory out of 5000000
  21221 multiletter control sequences out of 15000+600000
  6748 words of font info for 28 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 54i,13n,73p,941b,327s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 54i,12n,73p,941b,333s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
 </usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.p
@@ -761,10 +760,10 @@ l/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/t
 exlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texl
 ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on report.pdf (1 page, 128155 bytes).
+Output written on report.pdf (2 pages, 133318 bytes).
 PDF statistics:
- 75 PDF objects out of 1000 (max. 8388607)
- 58 compressed objects within 1 object stream
- 7 named destinations out of 1000 (max. 500000)
+ 83 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
+ 12 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
