@@ -30,7 +30,7 @@ citecolor=black
 \author{Jake Callahan, James Griffin, McKay Harward, Taylor Paskett, Isaac Robbins, Mingyan Zhao}
 
 \begin{document}
-
+\maketitle
 \begin{abstract}
 The goal of this project was to evaluate current use of Markov random fields in image segmentation, then to implement one of the more advanced methods. In this paper we discuss how we implemented the equations from a paper based on an unsupervised method that used metropolis Hastings algorithm to find the best parameters for the Markov random field as well as the best number of classes. In short, we coded up a hands-off method of segmenting an input image.
 \end{abstract}
@@ -173,9 +173,9 @@ As in the previous step, the MRF parameters $\beta_{c}^{(0)}$ are sampled using 
 \begin{array}{l}
 p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
 \quad=p\left(X | \beta_{c}^{(0)}, c \in \Lambda\right) p_{r}\left(\beta_{c}^{(0)}, c \in \Lambda\right) \\
-\quad=\prod_{\left(c \in \Lambda, \psi_{\eta}\right)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}+\beta^{(1)} V(c, \eta)\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right)}\right)^{n_{(c, \eta)}} \\
+\quad=\prod_{\left(c \in \Lambda, _{\eta}\right)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}+\beta^{(1)} V(c, \eta)\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right)}\right)^{n_{(c, \eta)}} \\
 \quad=\prod_{(c \in \Lambda)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta_{c}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}\right)^{n_{c}} \\
-\quad \times \prod_{(c \in \Lambda, \psi \eta)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta^{(1)} V(c, \eta)\right]\right) \sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right.}\right)^{n_{(c, \eta)}}
+\quad \times \prod_{(c \in \Lambda, \Psi \eta)}\left(\frac{\exp \left(-\frac{1}{T_{t}}\left[\beta^{(1)} V(c, \eta)\right]\right) \sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}\right]\right)}{\sum_{i \in \Lambda} \exp \left(-\frac{1}{T_{t}}\left[\beta_{i}^{(0)}+\beta^{(1)} V(i, \eta)\right]\right.}\right)^{n_{(c, \eta)}}
 \end{array}
 \end{equation}
 
@@ -206,15 +206,36 @@ The most difficult part of this paper involved sampling the number of classes.
 The notation throughout this sections was very difficult to understand.
 Below is the equation for the acceptance ratio for splitting a class $c$ into $c_{1}$ and $c_{2}$.
 
-\begin{equation}
+\begin{equation}\label{acc_prob_num_classes}
 \begin{aligned}
-\frac{p\left(X=x^{+}, \psi^{+}, k^{+} | Y=y\right)}{p(X=x, \psi, k | Y=y)} & \frac{1}{p_{\beta}\left(u_{1}\right) p_{\beta}\left(u_{2}\right) p_{\beta}\left(u_{3}\right)} \\
+\frac{p\left(X=x^{+}, \Psi^{+}, k^{+} | Y=y\right)}{p(X=x, \Psi, k | Y=y)} & \frac{1}{p_{\beta}\left(u_{1}\right) p_{\beta}\left(u_{2}\right) p_{\beta}\left(u_{3}\right)} \\
 \times \frac{\partial\left(\Psi_{c 1}, \Psi_{c 2}\right)}{p(\text {segmentation})} &\left|\frac{1}{\partial\left(\Psi_{c}, u_{1}, u_{2}, u_{3}\right)}\right|
 \end{aligned}
 \end{equation}
 
+<<<<<<< HEAD
 Unfortunately, we were never able to work out the notation in a way that made enough sense to even try to implement this sampling.
 However, this step only helps find the optimal number of classes for the segmentation, and omitting this step should not affect any other sampling or the performance of the algorithm as a whole.
+=======
+Unfortunately, we were not able to calculate this acceptance ratio.
+The problem arose from the approximation of the first term, which is calculated via
+\begin{equation}
+\begin{aligned}
+   p(X=x, \Psi, k | Y = y) \propto \prod_{s \in \Omega}  \frac{1}{\sqrt{2 \pi \sigma_{x_s}^2}} \exp \left \{ -\frac{1}{2} \left( \frac{y_s - \mu_{x_s} }{ \sigma_{x_s}}\right)^2  \right \} \\
+   \times \prod_{s \in \Omega} \frac{\exp \left \{ - \left(\beta_{x_s}^{(0)} + \beta^{(1)} V(x_s, \eta_s) \right)  \right \} }{\sum_{c \in \Lambda} \exp \left \{ -(\beta^{(0)}_c + \beta^{(1)} V(c, \eta_s)  \right \}} \\
+   \times p_r\left(\beta^{(1)}\right) p_r(k) \prod_{c \in \Lambda} p_r (\mu_c) p_r ( \sigma_c ) p_r (\beta_c^{(0)}).
+\end{aligned}
+\end{equation}
+
+When calculating this term, the products over all $ s \in \Omega $ create problems.
+In a relatively small 100 x 100 pixel image, this is a product over 10,000 terms.
+So, this almost always leads to numerical overflow (i.e. $p(X=x, \Psi, k | Y = y) = \pm \infty $) or underflow (i.e. $ p(X=x, \Psi, k | Y = y) = 0$).
+Overflow can be dealt with in certain situations; sometimes we can just leave it be, especially when computing acceptance probabilities, where anything greater than 1 is just taken to be 1.
+However, in this case, substituting either $\pm\infty$ or $ 0 $ into (\ref{acc_prob_num_classes}) gives $ \frac{\infty}{\infty} $ or $ \frac{0}{0} $ in the first term, both of which are undefined.
+
+Because of this, we chose not to sample the number of classes in our algorithm.
+Fortunately, this step only helps find the optimal number of classes for the segmentation at each step and ommitting this step should not affect the other steps or performance of the algorithm as a whole.
+>>>>>>> 7cfea4dc04fc311ee93d7b722a6830ba13fad28a
 With this step omitted from the algorithm, we simply specify the desired number of classes before running it.
 
 \section{Results}
