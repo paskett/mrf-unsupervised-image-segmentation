@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage[backend=biber]{biblatex}
 \graphicspath{ {./../imgs/} }
+\usepackage{bbm}
 
 \addbibresource{baby_cry.bib}
 
@@ -29,6 +30,8 @@ citecolor=black
 \author{Jake Callahan, James Griffin, McKay Harward, Taylor Paskett, Isaac Robbins, Mingyan Zhao}
 
 \begin{document}
+
+\maketitle
 
 \begin{abstract}
 The goal of this project was to evaluate current use of Markov random fields in image segmentation, then to implement one of the more advanced methods. In this paper we discuss how we implemented the equations from a paper based on an unsupervised method that used metropolis Hastings algorithm to find the best parameters for the Markov random field as well as the best number of classes. In short, we coded up a hands-off method of segmenting an input image.
@@ -61,9 +64,10 @@ Finally we used a few photographs to see the final results of our model.
 
 \begin{figure}[!htb]
 \begin{center}
-\begin{multicols}{3}
+\begin{multicols}{4}
     \includegraphics[height = \linewidth]{squares}\par
 	\includegraphics[height = \linewidth]{test}\
+	\includegraphics[height = \linewidth]{house}\
 	\includegraphics[height = \linewidth]{targetpractice}\par
 \end{multicols}
 \caption{The images used for training}
@@ -98,7 +102,7 @@ Leaving this out, we ended up implementing the following method.
 \end{enumerate}
 
 
-Here is a overview of the variables used in the equations:
+Here is an overview of the variables used in the equations:
 
 \begin{itemize}
 	\item $\Omega$: The image being classified
@@ -160,7 +164,8 @@ Because this probability would be used only for the acceptance ratio $a$ in the 
 
 \begin{equation}
 \begin{aligned}
-a & = \frac{p\left(\mu_{c}^{new}, \sigma_{c}^{new} | Y, X\right)}{p\left(\mu_{c}, \sigma_{c} | Y, X\right)}\\ & \propto \prod_{s: x_{s}=c}  \frac{\frac{1}{2 \pi \sigma_{c}^{new2} T_{t}} \exp \left\{-\frac{1}{2 T_{t}} \left(\frac{y_{s}-\mu_{c}^{new}}{\sigma_{c}^{new}}\right)^{2} \right\}}{\frac{1}{2 \pi \sigma_{c}^{2} T_{t}} \exp \left\{-\frac{1}{2 T_{t}} \left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2} \right\}}
+a & = \frac{p\left(\mu_{c}^{new}, \sigma_{c}^{new} | Y, X\right)}{p\left(\mu_{c}, \sigma_{c} | Y, X\right)}\\ & \propto \prod_{s: x_{s}=c}  \frac{\frac{1}{2 \pi \sigma_{c}^{new2} T_{t}} \exp \left\{-\frac{1}{2 T_{t}} \left(\frac{y_{s}-\mu_{c}^{new}}{\sigma_{c}^{new}}\right)^{2} \right\}}{\frac{1}{2 \pi \sigma_{c}^{2} T_{t-1}} \exp \left\{-\frac{1}{2 T_{t-1}} \left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2} \right\}}\\
+&= \prod_{s: x_s = c} \left( \frac{\sigma_c}{\sigma_c^{new}} \right)^{3} \left( \frac{T_{t-1}}{T_t} \right) \exp \left\{ \frac{-1}{2 T_t} \left( \frac{y_s - \mu_c^{new}}{\sigma_c^{new}} \right)^2 + \frac{1}{2 T_{t-1}} \left( \frac{y_s - \mu_c}{\sigma_c} \right)^2  \right\}
 \end{aligned}
 \end{equation}
 
@@ -219,12 +224,130 @@ With this step omitted from the algorithm, we simply specify the desired number 
 
 \section{Results}
 
+We were really shocked that we were able to successfully implement this images segmentation from the paper.
+We were not able to achieve the same results as the authors of the paper.
+This could be due to our lack of understanding as to what how the different parameters interact and affect the model.
+This could be a major factor in determining the variances for the distributions from which the proposed $\mu_{c}$ and $\sigma_{c}$ are drawn.
+
+We intially tested our model with the noisy squares image from Figure 1.
+The authors used this image in their paper and achieved great results in segmenting the image.
+Our model, however, struggled to identify the classes in the same way that the author's method did.
+This could be due to not having implemented the part step that resamples the number of classes, but we speculate that this has more to do with unknown parameters that we have set that may not be ideal.
+With this image, we noticed that the segmentations would converge to segmentations with only 2 or 3 classes, even when we had specified 5 or more classes, where certain squares were properly segmented but other squares the model seemed to be uncertain.
+This resulted in some squares being solid, where other similar squares were different combinations of the 2 or 3 classes the model was identifying.
+Below are the results that we were able to achieve compared to the authros' results in the paper.
+We were unable to get our model to produce the final smooth result that the paper achieved as shown in Figure 2.
+This was the desired output of our model, but unfortunately we were unable to achieve this result.
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{multicols}{3}
+	\includegraphics[height = \linewidth]{squares0}\par
+    Our result
+	\includegraphics[height = \linewidth]{squares1}\par
+    Author's intermediary result
+	\includegraphics[height = \linewidth]{squares2}\par
+    Author's final result
+\end{multicols}
+\caption{Results comparison for squares image}
+\end{center}
+\end{figure}
+
+The similarity of our result and their intermediary result is striking and suggests that our model is very close to working, however, our model never showed signs of smoothing out, even with thousands of iterations.
+
+As for the other images we used, this is what the results looked like.
+Again our model was able to identify major classes of pixels and segment them, however, our model mostly failed when it came to smoothing classes and removing noise.
+This can be seen in both of the examples below.
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{multicols}{5}
+    \includegraphics[height = \linewidth]{dogs_10}\par
+	\includegraphics[height = \linewidth]{dogs_25}\par
+	\includegraphics[height = \linewidth]{dogs_50}\par
+	\includegraphics[height = \linewidth]{dogs_350}\par
+	\includegraphics[height = \linewidth]{dogs_800}\par
+\end{multicols}
+
+\begin{multicols}{5}
+    \includegraphics[height = \linewidth]{house_10}\par
+	\includegraphics[height = \linewidth]{house_50}\
+	\includegraphics[height = \linewidth]{house_150}\par
+	\includegraphics[height = \linewidth]{house_500}\
+	\includegraphics[height = \linewidth]{house_1000}\par
+\end{multicols}
+
+\caption{The images used for training}
+\end{center}
+\end{figure}
+
+
+\section{Comparison to Other Methods}
+As part of our analysis, we wanted to compare our model to classical machine learning image segmentation approaches.
+For this we used K-means and pixel threshold testing.
+Throughout our model, we typically used 4 classes from which our model sampled, thus for our K-means we used 4 classes.
+Here is the K-means segmented output compared to our MRF output.
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{multicols}{4}
+	\includegraphics[width = \linewidth]{kmeans}\par
+    K-means with 4 clusters
+	\includegraphics[width = \linewidth]{thresh1}\par
+    2-class pixel thresholding
+	\includegraphics[width = \linewidth]{threshold}\par
+    4-class pixel thresholding
+	\includegraphics[width = \linewidth]{clustered}\par
+    Model results after 800 iterations
+\end{multicols}
+\caption{Comparison to other methods}
+\end{center}
+\end{figure}
+
+
+We also wanted to do some other comparisons, so we utilized the scikit learn image segmentation library to divide segment the imagebased on thresholds.
+To do this, we first chose to do a 2-class threshold using the mean pixel brightness.
+All of the pixels brighter than the mean were assigned to one cluster and the rest to the other.
+We then tried thresholding with 4 classes by assigning labels based on quartiles of pixel brightness.
+The bottom 25\% of pixels belonged to the first class and so on.
+
 
 \section{Analysis}
-Our methods turned out to be fairly effective. They don’t par with current state of the art technologies but they definitely do well for something done by a few undergraduate students in a single project, not research. The model we’ve created does a fairly decent job of segmenting images on par with what the original authors achieved, though sometimes in a few extra iterations. Looking at how it works, I do think it would work in a GAN for neural photo editing to maybe train the GAN to focus itself more closely on one area while keeping the rest of the image the same, but even with faster computers, it seems it still takes too long for any practical applications. Given enough computing power it can be used.
+Our methods turned out to be fairly effective.
+It was able to identify different classes initially and improve them, although it was only a slight improvement.
+Our model cannot compete with current state of the art methods.
+However, had our model been able to smooth out classes as we expected it to (see Figure 2), its performance likely would have been on par with newer state of the art methods.
+
+The results we achieved with the squares image reflected exactly the results that the authors had achieved in the paper.
+Our model seemed to work exactly as theirs had.
+However, we were unable to tune our model so that it would smooth out each cluster and achieve a result similar to the Author's final result.
+This was the main issue with our model in all cases.
+
+We saw the same results with the image of the side of a building that was also used in the paper (see Figure 3), but again, our results never smoothed out like theirs did.
+This is not to say that our model failed completely to smooth out classes.
+When comparing our model side by side with K-means and thresholding techniques, we noticed that our results were much closer to the results from these methods.
+It is hard to say whether our model was able to smooth these boundaries better than the other methods, especially because although the classes are very similar among methods, they are represented with different colors making it hard to compare them.
+In the 4-class pixel thresholding image, we notice that the labels for the dog on the left are split over his face (see Figure 4) even though the pixels were very close in intensity.
+Our model, like the K-means, was able to adjust the classes to account for more similar pixels instead of a more uniform partitioning.
+
+Perhaps the most notable is the black labeling of the dog on the right from our model.
+Our model has grouped together a few clusters and grouped them together, something that none of the other models were able to do.
+Even then, our model seems to be mostly classified into 2 classes, and is most similar to the 2-class pixel thresholding result, which is similar to the results we were seeing when classifying the squares image.
+
 
 \section{Conclusion}
-The initial intent of getting a completely unsupervised method of image segmentation using Markov Random Fields was successful and could probably be improved upon for efficiency. If given the opportunity to try image segmentation again, I would probably opt to use a neural network as they tend to require an initial investment of training time but can then be used to segment an image very quickly. Something we could do is have more informed priors for each parameters. We could also implement for color images (may be?)
+Although our model did work, it seemed to represent striking similarities to other rudimentary techniques like K-means and pixel thresholding.
+While this is not an issue, we expected that after more iterations, the classes would smooth out and we would see less noise and better groups of classes in our segmentations.
+The authors of the paper we used achieved near exact results to those that we found, however, with enough training, their results seemed to improve to what we would have expected, while our model did not.
+This was most likely due to poor choices for our parameters, especially those defining the prior dristributions from which other parameters were drawn.
+Without a stronger understanding of what these parameters were doing, it was hard to know why we were getting poor results.
+This could also be a result of not having implemented the full method as was done in the paper, although this seems less likely to us than having poor parameters.
 
+Implementing the method for sampling the number of classes in each iteration does not seem feasible given only the information provided in the paper.
+Thus, for future work to improve this model, a major grid search over many different images could be implemented to try and identify the best parameters for the model.
+This would require a vast amount of computing power, as there are at least 5 different parameters that are arbitrarily chosen.
+
+Overall, we are very happy with the work we were able to do on this project, even though the results are not amazing.
+Just getting the model to work properly was a great achievement for us as there was a lot of work required to both understand and then implement the equations and methods explained in the paper.
 
 \end{document}
