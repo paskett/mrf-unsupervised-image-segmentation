@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage[backend=biber]{biblatex}
 \graphicspath{ {./../imgs/} }
+\usepackage{bbm}
 
 \addbibresource{baby_cry.bib}
 
@@ -35,28 +36,25 @@ The goal of this project was to evaluate current use of Markov random fields in 
 \end{abstract}
 
 \section{Background and Motivation}
-This paper was motivated by the desire for a hands-off unsupervised image segmentation algorithm.
-Our primary motivation for wanting a hands-off image segmenter had to do with applications in neural photo editing using introspective adversarial networks as well as image recognition.
-The idea for using Markov random fields (MRF) for image segmentation is not new, in fact, the paper we decided to implement was written in 2000, but the unsupervised method doesn’t seem to have any study since then.
-The background research we conducted only returned methods for segmenting images based on pretraining an MRF on a class, and then estimating which pixels in a given image are most likely to be of that class.
-This included training the model to recognize trees and foilage, or roads using labeled images and then segmenting a new image based on the previous learned classes.
-While this is useful, the hands-off approach can work in far more applications because it does not require labeled data.
-The drawback of an unsupervised method is that it trades an initial investment of creating a pretrained MRF for a computationally expensive algorithm using Metropolis Hastings to update the MRF parameters.
+Image segmentation is one the the most important problems in machine learning today. Industries like medicine, transportation, and manufacturing have all been benefited by the rapid advances we have made in creating image segmentation systems. 
+One of the most interesting and valuable fields of study is the area focused on unsupervised image segmentation methods. 
+A powerful and accurate unsupervised image segmentation system would have applications in neural photo editing using introspective adversarial networks as well as in image recognition and other computer graphics applications. In this paper, we examine and implement Barker and Rayner's idea for using Markov random fields (MRFs) for unsupervised image segmentation [CITATION HERE].
 
-We investigated numerous methods for performing unsupervised image segmentation, however, ran into many road blocks with many different papers.
-The difficulty of these methods truly shocked us as we were unable to make any progress with numerous different papers.
-This paper, although older and full of poor notation, at least provided a simple overview of the algorithm along with the equations necessary to implement it.
-Anothe benefit of using the method described in this paper is that this paper does not require the user to specify the number of classes or segments.
-Rather, the final step of this iterative algorithm samples the best number of classes using Bayesian statistics.
+ The idea for using Markov random fields for image segmentation has been around for a long time and much research has been done in this area, mostly focusing on supervised learning methods. 
+ Most of this research centers around segmenting images based on pretraining a Markov random field on a class, and then estimating which pixels in a given image are most likely to be of that class. While this is useful, the more hands-off the approach the easier it is to apply to new scenarios as it does not require labeled data. 
+ 
+ Unfortunately, research regarding hands-off applications is virtually nonexistent, and when we were able to find studies of unsupervised image segmentation methods, the mathematics required were far beyond the scope of this class.
+ Other than Barker and Rayner's research, which was published in 2000, we could find no other papers studying the use of Markov random fields for unsupervised segmentation. 
+ The main drawback of this unsupervised method is that it trades an initial investment of creating pertained Markov random fields for a computationally expensive algorithm using metropolis Hastings.
+ However, because of the benefits this method provides--including learning not only the image classes but also how many classes to use--and because of the advances in computing power over the last 20 years, we believe that it is now valuable to revisit these methods in order to determine if applications are possible in the current world of machine learning.
 
 
 \section{Data}
-The image segmentation algorithm that we implemented in this paper is an unsupervised method.
-This means that the only data involved is the image that is segmented.
-We use a few different images, the first being a simple noisy grid of 16 different colored squares used in the paper.
-This served as a bit of a baseline to compare our results to those achieved in the paper.
-We used a second simple image with only a few clear segments.
-This image was used largely for testing the model as it was small and allowed us to run the model quickly.
+As an unsupervised method, the algorithm we outline below trains itself on each image it operates on. As such, we didn't need (or want) a large dataset to use in this project.
+Instead, we curated a small corpus of images by hand that we believed would be useful in providing us information about how well our algorithm was training and making predictions. 
+The image we used was a simple noisy grid of 16 different colored squares used by Barker and Rayner.
+This served as a baseline to compare our results to those achieved in the paper.
+We used a second simple image with only a few clear segments, which was used largely for testing the model as it was small and allowed us to run the model quickly.
 Finally we used a few photographs to see the final results of our model.
 
 \begin{figure}[!htb]
@@ -72,7 +70,7 @@ Finally we used a few photographs to see the final results of our model.
 
 \section{Methods}
 Below is a simple overview of the algorithm proposed and then the modified algorithm we implemented.
-A more in depth explanations of each step along with descriptions of how we implemented them and the difficulties we encountered at each step follows the algorithms.
+A more in depth explanations of each step along with descriptions of the associated implementation and difficulties follow the algorithm.
 
 \begin{enumerate}
 	\item Randomly initialize the parameters for the MRF and number of classes
@@ -82,13 +80,13 @@ A more in depth explanations of each step along with descriptions of how we impl
 	\item Sample number of classes
 	\item Repeat steps (2) - (5)
 \end{enumerate}
+The sampling method follows the same basic pattern: sample new parameters from their prior distributions, calculate an acceptance probability (or likelihood) for those parameters, and then use the Metropolis-Hastings algorithm to choose to accept/reject those parameters.
 
-Thought the process is simple, each of these steps required extensive coding and interpretation of the equations described in the paper.
-Many of the equations were especially vague and incldued very poor and inconsistent notation which further complicated the already difficult equations.
+On the surface, this algorithm is simple. However, many of the equation definitions and notational choices were unclear and required extensive interpretation. 
+Further, some of the equations as defined in the text suffered from under and overflow errors and thus required considerable reworking to be suitable for implementation. 
 Sampling the number of classes was the most complex section of the paper and the notation was especially difficult to understand.
-We were unable to implement this step, however, this was not a major issue, because this only affected how many classes were being used and was a parameter we could fix.
-Leaving this out, we ended up implementing the following method.
-
+As such, we were unable to implement this step, but because the number of classes was a fixable parameter, this was not a significant issue.
+Leaving this step out, we implemented the following method.
 \begin{enumerate}
 	\item Set the number of desired classes and randomly initialize the parameters for the MRF
 	\item Get the most likely segmentation given the MRF parameters
@@ -97,8 +95,8 @@ Leaving this out, we ended up implementing the following method.
 	\item Repeat steps (2) - (4)
 \end{enumerate}
 
-
-Here is a overview of the variables used in the equations:
+\subsection{Variable Definitions}
+We define the following variables to use in the various equations to follow:
 
 \begin{itemize}
 	\item $\Omega$: The image being classified
@@ -106,9 +104,9 @@ Here is a overview of the variables used in the equations:
 	\item $Y$: The grayscale image intensities
 	\item $y_{s}$: The grayscale intensity at pixel $s$ in the interval $(0,1]$
 	\item $X$: The segmentation labels for the MRF
-	\item $x_{s}$: The class to which pixel $s$ is assigned
+	\item $x_{s}$: The label to which pixel $s$ is assigned
 	\item $\Lambda$: The set of class labels
-	\item $\eta_{s}$: The set of 4 direct neighbors of cell $s$
+	\item $\eta_{s}$: The set of 4 direct neighbors of pixel $s$
 	\item $\Psi$: The parameter vector consisting of both noise and MRF parameters
 	\item $\Theta_{c}$: The noise model parameter vector consisting of $\mu_{c}$ and $\sigma_{c}$
 	\item $\beta_{c}^{(0)}$: The external field parameter
@@ -121,18 +119,17 @@ Here is a overview of the variables used in the equations:
 
 
 \subsection{Segment the Image with the MRF}
+With an initial set of random parameters to define our MRF, we needed to first find the probability of each pixel being in each class:
 \begin{equation}
 \begin{aligned}
 p\left(x_{s} = c | y_{s}, \eta_{s}, \Psi_{c}\right) & \propto \\
 &\frac{1}{\sqrt{2 \pi \sigma_{c}^{2} T_{t}}} \exp \left\{ -\frac{1}{T_{t}} \left[\frac{1}{2} \left(\frac{y_{s}-\mu_{c}}{\sigma_{c}}\right)^{2} + \left( \beta_{c}^{(0)} + \beta^{(1)} V(c, \eta_{s}) \right) \right] \right\}
 \end{aligned}
 \end{equation}
+where $V(c, \eta)=\frac{1}{4} \sum_{t \in \eta}(c \oplus\left.x_{t}\right),$ where $\oplus$ is an operator defined to take the value -1 if its arguments are equal and 1 otherwise.
 
-where $V(c, \eta)=\frac{1}{4} \sum_{t \in \eta}(c \oplus\left.x_{t}\right),$ where $\oplus$ is an operator defined to take the value -1 if its arguments are equal, otherwise, +1.
-
-With an initial set of random parameters to define our MRF, we needed to first find the probability of each pixel being in each class.
-This was relatively simple to compute once the equation had been coded.
 We then calculated the probabilities over the entire image for each class and took the argmax, thereby assigning each pixel to the class to which it most likely belongs.
+The implementation of this process was relatively straightforward and required no adjustments to the equations.
 
 
 \subsection{Update Noise Parameters}
@@ -144,7 +141,7 @@ p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \prod_{s: x_{s}=c} p\left(y_{
 \end{aligned}
 \end{equation}
 
-With a firm grasp on Metropolis Hastings, we expected updating the noise parameters to be straightforward, however, the suggested $T_{t}$ from the paper was so large, we ran into immediate underflow errors during computation.
+With a firm grasp on Metropolis-Hastings, we expected updating the noise parameters to be straightforward. However, the suggested $T_{t}$ from the paper was so large, we ran into immediate underflow errors during computation.
 We soon realized the issue was the $n_{c}$ exponent in the denominator causing our underflow.
 While segmenting a small 100 x 100 image into 4 classes, $n_{c}$ should be about 25,000 and possibly much larger.
 This necessitated that we calculate the equation in a completely different form which we give below.
@@ -156,7 +153,7 @@ p\left(\mu_{c}, \sigma_{c} | Y, X\right) & \propto \frac{1}{\sigma_{c}}\prod_{s:
 \end{equation}
 
 This allowed us to avoid the exponent and the large sum, both of which could cause massive underflow by calculating a each part of the product individually.
-Because this probability would be used only for the acceptance ratio $a$ in the Metropolis Hastings algorithm, we extended this calculation one step further.
+Because this probability would be used only for the acceptance ratio $a$ in the Metropolis-Hastings algorithm, we extended this calculation one step further.
 
 \begin{equation}
 \begin{aligned}
@@ -165,12 +162,12 @@ a & = \frac{p\left(\mu_{c}^{new}, \sigma_{c}^{new} | Y, X\right)}{p\left(\mu_{c}
 \end{equation}
 
 This allowed us to calculate the acceptance ratio for a single pixel before taking the product over all of the pixels of the specified class.
-By doing so, we completely avoided underflow, however, we were only getting acceptance ratios of $0$ and $\infty$.
-At first this concerned us but we realized that given model parameters, the these individual ratios would be very similar, at least across each class, thus for $a_{s} > 1$ taking the product would approach $\infty$ and for $a_{s} < 1$, the product would approach 0.
+By doing so, we completely avoided underflow. However, we were only getting acceptance ratios of $0$ and $\infty$.
+At first this concerned us but we realized that given model parameters, the individual ratios would be very similar (at least across each class) and thus for $a_{s} > 1$ taking the product would approach $\infty$ and for $a_{s} < 1$, the product would approach 0.
 Having resolved this issue, we were able to update our noise parameters $\mu_{c}$ and $\sigma_{c}$ properly.
 
 \subsection{Update MRF Parameters}
-The MRF parameters $\beta_{c}^{(0)}$ are sampled using Metropolis-Hastings just like the previous step with the following probability:
+As in the previous step, the MRF parameters $\beta_{c}^{(0)}$ are sampled using Metropolis-Hastings with the following probability:
 
 \begin{equation}
 \begin{array}{l}
@@ -183,11 +180,14 @@ p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) \\
 \end{equation}
 
 We immediately ran into the issue of the definition of the exponent $n_{(c, \eta)}$ that is used.
-The paper defines this as $n_{(c, \eta)}=\#\left(s: x_{s}=c, \eta_{s}=\eta\right)$
-This notation is abusive and does not follow what had been previously done.
-After much deliberation, we realized that this was an extremely convoluted way of iterating over each $s:x_{s} = c$ as they had done in all previous equations.
-For no apparent reason they were iterating over $\eta$ with a counting function that returned $n_{(c, \eta)}=0$ if $x_{s} \neq c$ and $n_{(c, \eta)}=1$ if $x_{s} = c$. Thus the probabilities corresponding to pixels such that $x_{s} \neq c$ were set to $1$ and essentially excluded from the product.
-We remedied this equation as follows:
+The paper defines this as $n_{(c, \eta)}=\#\left(s: x_{s}=c, \eta_{s}=\eta\right)$;
+this notation is abusive and does not follow the paper's previously established notational conventions.
+As written, this $n$ function takes in a class $c$ and a set of pixels $\eta$, then returns the number of pixels that have label $c$ and neighbors $\eta$. 
+However, due to the way $\eta$ is defined at the beginning of the paper, each pixel will have a unique set of neighbors. 
+ 
+Thus, this $n$ function will return a 1 if there is a pixel in class $c$ with the given set of neighbors $\eta$ and a $0$ if there is not a pixel in class $c$ with that exact set of neighbors. 
+Then for each class, iterating over all $\eta_s$ with the $n$ function is equivalent to iterating over all $s: x_s = c$ with the indicator function $\mathbbm{1}(s,c)_{x_s = c}$.
+This leads to probabilities corresponding to pixels such that $x_{s} \neq c$ being set to $1$ and essentially excluded from the product, so we remedied this equation as follows:
 
 \begin{equation}
 \begin{aligned}
@@ -197,13 +197,13 @@ p\left(\beta_{c}^{(0)}, c \in \Lambda | X\right) & = \prod_{s:x_{s} = c}\frac{\e
 
 This greatly simplified the calculations for updating the MRF parameters  $\beta_{c}^{(0)}$.
 We used the same method as described in Section 3.2 of calculating each of the individual acceptance ratios $a_{s}$ before taking the product over all the ratios.
-A similar equation is proposed for the likelihod $p(\beta_{c}^{(1)}, c \in \Lambda | X)$, however, the paper states that the posterior density alculation for $\beta_{c}^{(1)}$ will not be proper under particular underlying label map configurations.
+A similar equation is proposed for the likelihood $p(\beta_{c}^{(1)}, c \in \Lambda | X)$. However, the paper states that the posterior density calculation for $\beta_{c}^{(1)}$ will not be proper under particular underlying label map configurations.
 The paper fixes a value \textit{a priori} of $1.5$ for $\beta_{c}^{(1)}$.
 We follow this practice in our approach.
 
 \subsection{Number of classes}
 The most difficult part of this paper involved sampling the number of classes.
-The notation throughout this part of the paper was very difficult to understand.
+The notation throughout this sections was very difficult to understand.
 Below is the equation for the acceptance ratio for splitting a class $c$ into $c_{1}$ and $c_{2}$.
 
 \begin{equation}
@@ -213,8 +213,8 @@ Below is the equation for the acceptance ratio for splitting a class $c$ into $c
 \end{aligned}
 \end{equation}
 
-Unfortunately, we were never able to work out the notation in a way that made enough sense to even try and implement this sampling.
-However, this step only helps find the optimal number of classes for the segmentation at each step and emmitting this step should not affect the other steps or performance of the algorithm as a whole.
+Unfortunately, we were never able to work out the notation in a way that made enough sense to even try to implement this sampling.
+However, this step only helps find the optimal number of classes for the segmentation, and omitting this step should not affect any other sampling or the performance of the algorithm as a whole.
 With this step omitted from the algorithm, we simply specify the desired number of classes before running it.
 
 \section{Results}
